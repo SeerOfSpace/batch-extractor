@@ -15,21 +15,20 @@ public class Main {
 			System.out.println("Error: Must have a single argument");
 		} else if(args.length > 1) {
 			System.out.println("Error: Too many arguments");
-			return;
-		}
-		File source = new File(args[0]);
-		try {
-			if(source.isDirectory()) {
-				unzipFolderJava(source);
-			} else if(source.isFile()) {
-				unzipJava(source);
-			} else {
-				System.out.println("Error: Invalid path");
+		} else {
+			File source = new File(args[0]);
+			try {
+				if(source.isDirectory()) {
+					unzipFolderJava(source);
+				} else if(source.isFile()) {
+					unzipJava(source);
+				} else {
+					System.out.println("Error: Invalid path");
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
-		
 	}
 	
 	public static String getName(String s) {
