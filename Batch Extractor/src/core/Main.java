@@ -60,7 +60,7 @@ public class Main {
 		for(File file : dir.listFiles()) {
 			if(file.isDirectory()) {
 				unzipFolderJava(file, parent);
-			} else if(getExtension(file.getName()).equals("zip") && file.getName().toLowerCase().contains("moss")) {
+			} else if(file.getName().toLowerCase().endsWith("moss.zip")) {
 				File zipParent = new File(parent.getAbsolutePath() + File.separator + removeExtension(file.getName()));
 				unzipJava(file, zipParent);
 			}
@@ -74,8 +74,13 @@ public class Main {
 	}
 	
 	public static void unzipJava(File source, File parent) throws IOException {
+		ZipFile zipFile;
+		try {
+			zipFile = new ZipFile(source);
+		} catch(java.util.zip.ZipException e) {
+			return;
+		}
 		parent.mkdirs();
-		ZipFile zipFile = new ZipFile(source);
 		Enumeration<? extends ZipEntry> zipEnum = zipFile.entries();
 		while(zipEnum.hasMoreElements()) {
 			ZipEntry entry = zipEnum.nextElement();
