@@ -51,7 +51,7 @@ public class Main {
 	}
 	
 	public static void unzipFolderJava(File dir) throws IOException {
-		File parent = new File(dir.getParent() + File.separator + dir.getName() + " Unzipped");
+		File parent = new File(dir.getAbsoluteFile().getParent() + File.separator + dir.getName() + " Unzipped");
 		unzipFolderJava(dir, parent);
 	}
 	
@@ -60,7 +60,7 @@ public class Main {
 		for(File file : dir.listFiles()) {
 			if(file.isDirectory()) {
 				unzipFolderJava(file, parent);
-			} else if(getExtension(file.getName()).equals("zip")) {
+			} else if(getExtension(file.getName()).equals("zip") && file.getName().toLowerCase().contains("moss")) {
 				File zipParent = new File(parent.getAbsolutePath() + File.separator + removeExtension(file.getName()));
 				unzipJava(file, zipParent);
 			}
