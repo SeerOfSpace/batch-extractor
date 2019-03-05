@@ -15,9 +15,9 @@ public class Main {
 			File source = new File(args[0]);
 			try {
 				if(source.isDirectory()) {
-					UnzipLogic.unzipFolderJava(source, true);
+					UnzipLogicJava.unzipFolderJava(source, true);
 				} else if(source.isFile()) {
-					UnzipLogic.unzipJava(source);
+					UnzipLogicJava.unzipJava(source);
 				} else {
 					System.out.println("Error: Invalid path");
 				}
