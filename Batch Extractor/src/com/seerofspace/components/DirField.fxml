@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+
+<fx:root alignment="CENTER" prefHeight="0.0" prefWidth="400.0" type="HBox" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <TextField fx:id="textfield" HBox.hgrow="ALWAYS">
+         <HBox.margin>
+            <Insets bottom="20.0" left="20.0" right="5.0" top="20.0" />
+         </HBox.margin>
+      </TextField>
+      <Button fx:id="fileButton" mnemonicParsing="false" text="Browse Files">
+         <HBox.margin>
+            <Insets bottom="20.0" right="5.0" top="20.0" />
+         </HBox.margin>
+      </Button>
+      <Button fx:id="folderButton" mnemonicParsing="false" text="Browse Folders">
+         <HBox.margin>
+            <Insets right="20.0" />
+         </HBox.margin>
+      </Button>
+   </children>
+</fx:root>
