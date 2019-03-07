@@ -26,7 +26,17 @@
                   <Insets bottom="20.0" />
                </VBox.margin>
             </RadioButton>
-            <CheckBox fx:id="checkBox" mnemonicParsing="false" selected="true" text="Only include MOSS zip files">
+            <CheckBox fx:id="mossCheckBox" mnemonicParsing="false" selected="true" text="Only include MOSS zip files">
+               <VBox.margin>
+                  <Insets bottom="20.0" />
+               </VBox.margin>
+            </CheckBox>
+            <CheckBox fx:id="renameCheckBox" mnemonicParsing="false" text="Shorten folder names">
+               <VBox.margin>
+                  <Insets bottom="20.0" />
+               </VBox.margin>
+            </CheckBox>
+            <CheckBox fx:id="blackboardCheckBox" mnemonicParsing="false" text="Blackboard Zip">
                <VBox.margin>
                   <Insets bottom="20.0" />
                </VBox.margin>

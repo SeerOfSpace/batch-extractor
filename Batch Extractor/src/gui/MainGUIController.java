@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import com.seerofspace.components.DirField;
 
+import core.OtherLogic;
 import core.UnzipLogicCpp;
 import core.UnzipLogicJava;
 import javafx.application.Platform;
@@ -18,12 +19,14 @@ import javafx.stage.FileChooser.ExtensionFilter;
 
 public class MainGUIController {
 	
-	@FXML BorderPane root;
-	@FXML DirField dirField;
-	@FXML Button startButton;
-	@FXML CheckBox checkBox;
-	@FXML RadioButton radioJava;
-	@FXML RadioButton radioCpp;
+	@FXML private BorderPane root;
+	@FXML private DirField dirField;
+	@FXML private Button startButton;
+	@FXML private CheckBox mossCheckBox;
+	@FXML private CheckBox renameCheckBox;
+	@FXML private CheckBox blackboardCheckBox;
+	@FXML private RadioButton radioJava;
+	@FXML private RadioButton radioCpp;
 	
 	@FXML
 	private void initialize() {
@@ -40,18 +43,27 @@ public class MainGUIController {
 			if(dirField.isValid()) {
 				File file = new File(dirField.getText());
 				try {
+					if(file.isFile() && blackboardCheckBox.isSelected()) {
+						file = OtherLogic.unzipMainZip(file);
+					}
 					if(radioJava.isSelected()) {
 						if(file.isDirectory()) {
-							UnzipLogicJava.unzipFolderJava(file, checkBox.isSelected());
+							UnzipLogicJava.unzipFolderJava(file, mossCheckBox.isSelected());
 						} else {
 							UnzipLogicJava.unzipJava(file);
 						}
 					} else if(radioCpp.isSelected()) {
 						if(file.isDirectory()) {
-							UnzipLogicCpp.unzipFolderCpp(file, checkBox.isSelected());
+							UnzipLogicCpp.unzipFolderCpp(file, mossCheckBox.isSelected());
 						} else {
 							UnzipLogicCpp.unzipCpp(file);
 						}
+					}
+					if(file.isDirectory() && renameCheckBox.isSelected()) {
+						OtherLogic.rename(new File(file.getAbsolutePath() + " Unzipped"));
+					}
+					if(blackboardCheckBox.isSelected()) {
+						OtherLogic.deleteFolder(file);
 					}
 				} catch (IOException e1) {
 					e1.printStackTrace();

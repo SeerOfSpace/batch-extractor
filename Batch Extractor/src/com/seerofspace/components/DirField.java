@@ -152,7 +152,6 @@ public class DirField extends HBox {
 			String extension = "*." + getExtension(file.getAbsolutePath());
 			for(ExtensionFilter e : extensions) {
 				for(String s : e.getExtensions()) {
-					System.out.println(extension);
 					if(s.equals(extension) || s.equals("*.*")) {
 						return true;
 					}
