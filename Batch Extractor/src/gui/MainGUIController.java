@@ -41,28 +41,31 @@ public class MainGUIController {
 		toggleGroup.getToggles().addAll(radioJava, radioCpp);
 		startButton.setOnAction(e -> {
 			if(dirField.isValid()) {
-				File file = new File(dirField.getText());
 				try {
+					File file = new File(dirField.getText());
+					File dest = OtherLogic.getDest(file);
+					boolean unzippedMain = false;
 					if(file.isFile() && blackboardCheckBox.isSelected()) {
 						file = OtherLogic.unzipMainZip(file);
+						unzippedMain = true;
 					}
 					if(radioJava.isSelected()) {
 						if(file.isDirectory()) {
-							UnzipLogicJava.unzipFolderJava(file, mossCheckBox.isSelected());
+							UnzipLogicJava.unzipFolderJava(file, dest, mossCheckBox.isSelected());
 						} else {
 							UnzipLogicJava.unzipJava(file);
 						}
 					} else if(radioCpp.isSelected()) {
 						if(file.isDirectory()) {
-							UnzipLogicCpp.unzipFolderCpp(file, mossCheckBox.isSelected());
+							UnzipLogicCpp.unzipFolderCpp(file, dest, mossCheckBox.isSelected());
 						} else {
 							UnzipLogicCpp.unzipCpp(file);
 						}
 					}
 					if(file.isDirectory() && renameCheckBox.isSelected()) {
-						OtherLogic.rename(new File(file.getAbsolutePath() + " Unzipped"));
+						OtherLogic.rename(dest);
 					}
-					if(blackboardCheckBox.isSelected()) {
+					if(blackboardCheckBox.isSelected() && unzippedMain) {
 						OtherLogic.deleteFolder(file);
 					}
 				} catch (IOException e1) {
