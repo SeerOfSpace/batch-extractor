@@ -25,7 +25,8 @@ public class DirField extends HBox {
 	private String defaultText;
 	private ExtensionFilter[] extensions;
 	private PseudoClass empty;
-	private PseudoClass drag;
+	private PseudoClass dragAccepted;
+	private PseudoClass dragRejected;
 	private BooleanProperty enableFileButton;
 	private BooleanProperty enableFolderButton;
 	
@@ -60,7 +61,8 @@ public class DirField extends HBox {
 			e.printStackTrace();
 		}
 		getStylesheets().add(getClass().getResource("stylesheet.css").toExternalForm());
-		drag = PseudoClass.getPseudoClass("drag");
+		dragAccepted = PseudoClass.getPseudoClass("dragAccepted");
+		dragRejected = PseudoClass.getPseudoClass("dragRejected");
 		empty = PseudoClass.getPseudoClass("empty");
 		textfield.setText(defaultText);
 		textfield.pseudoClassStateChanged(empty, true);
@@ -82,7 +84,7 @@ public class DirField extends HBox {
 			}
 		});
 		textfield.setOnDragOver(e -> {
-			if(e.getDragboard().hasFiles()) {
+			if(e.getDragboard().hasFiles() && isValid(e.getDragboard().getFiles().get(0))) {
 				e.acceptTransferModes(TransferMode.LINK);
 			}
 			e.consume();
@@ -98,11 +100,16 @@ public class DirField extends HBox {
 			e.consume();
 		});
 		textfield.setOnDragEntered(e -> {
-			textfield.pseudoClassStateChanged(drag, true);
+			if(isValid(e.getDragboard().getFiles().get(0))) {
+				textfield.pseudoClassStateChanged(dragAccepted, true);
+			} else {
+				textfield.pseudoClassStateChanged(dragRejected, true);
+			}
 			e.consume();
 		});
 		textfield.setOnDragExited(e -> {
-			textfield.pseudoClassStateChanged(drag, false);
+			textfield.pseudoClassStateChanged(dragAccepted, false);
+			textfield.pseudoClassStateChanged(dragRejected, false);
 			e.consume();
 		});
 		fileButton.setOnAction(e -> {
@@ -146,6 +153,10 @@ public class DirField extends HBox {
 	
 	public boolean isValid() {
 		File file = new File(textfield.getText());
+		return isValid(file);
+	}
+	
+	private boolean isValid(File file) {
 		if(file.isDirectory()) {
 			return true;
 		} else if(file.isFile()) {
