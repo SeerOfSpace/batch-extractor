@@ -1,7 +1,6 @@
 package core;
 
 import java.io.File;
-import java.io.IOException;
 import gui.MainGUI;
 
 public class Main {
@@ -9,20 +8,25 @@ public class Main {
 	public static void main(String[] args) {
 		if(args.length == 0) {
 			MainGUI.launchGUI();
-		} else if(args.length > 1) {
+		} else if(args.length > 2) {
 			System.out.println("Error: Too many arguments");
 		} else {
 			File source = new File(args[0]);
-			try {
+			Unzipper unzipper = new Unzipper();
+			UnzipperFNF unzipperFNF = new UnzipperFNF(unzipper);
+			if(args.length == 2) {
+				File dest = new File(args[2]);
 				if(source.isDirectory()) {
-					UnzipLogicJava.unzipFolderJava(source, true);
-				} else if(source.isFile()) {
-					UnzipLogicJava.unzipJava(source);
+					unzipperFNF.unzipFNF(source, dest);
 				} else {
-					System.out.println("Error: Invalid path");
+					unzipper.unzip(source, dest);
 				}
-			} catch (IOException e) {
-				e.printStackTrace();
+			} else {
+				if(source.isDirectory()) {
+					unzipperFNF.unzipFNF(source);
+				} else {
+					unzipper.unzip(source);
+				}
 			}
 		}
 	}

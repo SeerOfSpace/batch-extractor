@@ -1,13 +1,12 @@
 package gui;
 
 import java.io.File;
-import java.io.IOException;
 
 import com.seerofspace.components.DirField;
 
-import core.OtherLogic;
-import core.UnzipLogicCpp;
-import core.UnzipLogicJava;
+import core.CustomFileUtils;
+import core.Unzipper;
+import core.UnzipperFNF;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -30,6 +29,10 @@ public class MainGUIController {
 	
 	@FXML
 	private void initialize() {
+		dirField.setExtensions(new ExtensionFilter("Zip Files", "*.zip"));
+		ToggleGroup toggleGroup = new ToggleGroup();
+		toggleGroup.getToggles().addAll(radioJava, radioCpp);
+		
 		Platform.runLater(() -> {
 			root.requestFocus();
 		});
@@ -37,44 +40,96 @@ public class MainGUIController {
 			root.requestFocus();
 			e.consume();
 		});
-		ToggleGroup toggleGroup = new ToggleGroup();
-		toggleGroup.getToggles().addAll(radioJava, radioCpp);
 		startButton.setOnAction(e -> {
-			if(dirField.isValid()) {
-				try {
-					File file = new File(dirField.getText());
-					File dest = OtherLogic.getDest(file);
-					boolean unzippedMain = false;
-					if(file.isFile() && blackboardCheckBox.isSelected()) {
-						file = OtherLogic.unzipMainZip(file);
-						unzippedMain = true;
-					}
-					if(radioJava.isSelected()) {
-						if(file.isDirectory()) {
-							UnzipLogicJava.unzipFolderJava(file, dest, mossCheckBox.isSelected());
-						} else {
-							UnzipLogicJava.unzipJava(file);
-						}
-					} else if(radioCpp.isSelected()) {
-						if(file.isDirectory()) {
-							UnzipLogicCpp.unzipFolderCpp(file, dest, mossCheckBox.isSelected());
-						} else {
-							UnzipLogicCpp.unzipCpp(file);
-						}
-					}
-					if(file.isDirectory() && renameCheckBox.isSelected()) {
-						OtherLogic.rename(dest);
-					}
-					if(blackboardCheckBox.isSelected() && unzippedMain) {
-						OtherLogic.deleteFolder(file);
-					}
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
-			}
+			start();
 			e.consume();
 		});
-		dirField.setExtensions(new ExtensionFilter("Zip Files", "*.zip"));
+		
+		
+	}
+	
+	private void start() {
+		if(dirField.isValid()) {
+			File source = new File(dirField.getText());
+			ProgressGUI progressGUI = new ProgressGUI();
+			progressGUI.start();
+			ProgressGUIController progressGUIController = progressGUI.getController();
+			Unzipper unzipper = new Unzipper();
+			unzipper.setPreserveFolders(false);
+			unzipper.setUnzipperInterface(progressGUIController);
+			UnzipperFNF unzipperFNF = new UnzipperFNF();
+			unzipperFNF.setUnzipper(unzipper);
+			unzipperFNF.setUnzipperFNFInterface(progressGUIController);
+			
+			if(radioJava.isSelected()) {
+				unzipper.setFileExtensions(new String[] {"java"});
+			} else if(radioCpp.isSelected()) {
+				unzipper.setFileExtensions(new String[] {"cpp", "h"});
+			}
+			if(mossCheckBox.isSelected()) {
+				unzipperFNF.setKeywords(new String[] {"moss.zip"});
+			}
+			
+			new Thread(() -> {
+				File dest;
+				boolean fnf;
+				boolean result;
+				if(blackboardCheckBox.isSelected() && source.isFile()) {
+					fnf = true;
+					progressGUIController.setFnf(fnf);
+					File temp = new File(source.getParentFile(), "...temp");
+					new Unzipper().unzip(source, temp);
+					dest = getFileDest(source);
+					result = unzipperFNF.unzipFNF(temp, dest);
+					CustomFileUtils.deleteFolder(temp);
+				} else if(source.isFile()) {
+					fnf = false;
+					progressGUIController.setFnf(fnf);
+					dest = getFileDest(source);
+					result = unzipper.unzip(source, dest);
+				} else {
+					fnf = true;
+					progressGUIController.setFnf(fnf);
+					dest = getFolderDest(source);
+					result = unzipperFNF.unzipFNF(source, dest);
+				}
+				if(renameCheckBox.isSelected() && result) {
+					rename(dest, fnf);
+				}
+				Platform.runLater(() -> {
+					progressGUI.close();
+				});
+			}).start();
+		}
+	}
+	
+	private File getFileDest(File source) {
+		File dest = new File(source.getParentFile(), CustomFileUtils.removeExtension(source.getName()));
+		dest = CustomFileUtils.getNextFreePath(dest);
+		return dest;
+	}
+	
+	private File getFolderDest(File source) {
+		File dest = new File(source.getParentFile(), source.getName() + " Unzipped");
+		dest = CustomFileUtils.getNextFreePath(dest);
+		return dest;
+	}
+	
+	private void rename(File file, boolean fnf) {
+		File[] files;
+		if(fnf) {
+			files = file.listFiles();
+		} else {
+			files = new File[] {file};
+		}
+		for(File entry : files) {
+			String name = entry.getName();
+			int index = name.indexOf('_', 1 + name.indexOf('_', 1 + name.indexOf('_', 1 + name.indexOf('_'))));
+			String newName = name.substring(index + 1, name.length());
+			File newFile = new File(entry.getParent(), newName);
+			newFile = CustomFileUtils.getNextFreePath(newFile);
+			entry.renameTo(newFile);
+		}
 	}
 	
 }
