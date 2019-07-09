@@ -1,4 +1,4 @@
-package gui;
+package com.seerofspace.batchextractor.gui;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -8,6 +8,10 @@ import javafx.stage.Stage;
 
 public class MainGUI extends Application {
 	
+	public static void main(String[] args) {
+		launch();
+	}
+	
 	@Override
 	public void start(Stage primaryStage) {
 		try {
@@ -15,15 +19,11 @@ public class MainGUI extends Application {
 			Parent root = loader.load();
 			Scene scene = new Scene(root);
 			primaryStage.setScene(scene);
-			primaryStage.setTitle("ASDF");
+			primaryStage.setTitle("Batch Extractor");
 			primaryStage.show();
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
-	}
-	
-	public static void launchGUI() {
-		launch();
 	}
 
 }

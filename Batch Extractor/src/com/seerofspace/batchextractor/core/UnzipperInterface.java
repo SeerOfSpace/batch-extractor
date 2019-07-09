@@ -1,4 +1,4 @@
-package core;
+package com.seerofspace.batchextractor.core;
 
 public interface UnzipperInterface {
 	

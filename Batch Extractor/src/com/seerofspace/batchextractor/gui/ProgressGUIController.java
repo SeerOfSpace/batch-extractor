@@ -1,8 +1,10 @@
-package gui;
+package com.seerofspace.batchextractor.gui;
 
-import core.UnzipperFNFInterface;
-import core.UnzipperInterface;
+import com.seerofspace.batchextractor.core.UnzipperInterface;
+
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -11,47 +13,25 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 
-public class ProgressGUIController implements UnzipperInterface, UnzipperFNFInterface {
+public class ProgressGUIController implements UnzipperInterface {
 	
 	@FXML private Label label1;
 	@FXML private Label label2;
 	@FXML private ProgressBar progressBar;
-	@FXML private Button button;
-	private boolean fnf;
+	@FXML private Button stopButton;
 	
 	@FXML
 	public void initialize() {
-		label1.setText("");
-		label2.setText("");
-		fnf = false;
+		label1.setText("Loading...");
+		label2.setText("Loading...");
 	}
-
+	
+	public void setOnStopButtonAction(EventHandler<ActionEvent> e) {
+		stopButton.setOnAction(e);
+	}
+	
 	@Override
 	public void updateProgress(int count, int length) {
-		if(!fnf) {
-			updateProgressFNF(count, length);
-		}
-	}
-
-	@Override
-	public void updateText(String file) {
-		if(!fnf) {
-			updateTextFNF(file);
-		}
-	}
-	
-	@Override
-	public boolean errorConfirmation(String title, String text) {
-		return new AlertThread(title, text, AlertType.CONFIRMATION).r();
-	}
-
-	@Override
-	public void errorReport(String title, String text) {
-		new AlertThread(title, text, AlertType.ERROR).r();
-	}
-	
-	@Override
-	public void updateProgressFNF(int count, int length) {
 		Platform.runLater(()-> {
 			label1.setText(count + " / " + length);
 			if(count == 0) {
@@ -63,20 +43,20 @@ public class ProgressGUIController implements UnzipperInterface, UnzipperFNFInte
 	}
 
 	@Override
-	public void updateTextFNF(String file) {
+	public void updateText(String file) {
 		Platform.runLater(()-> {
 			label2.setText(file);
 		});
 	}
-
+	
 	@Override
-	public boolean errorConfirmationFNF(String title, String text) {
-		return errorConfirmation(title, text);
+	public boolean errorConfirmation(String title, String text) {
+		return new AlertThread(title, text, AlertType.CONFIRMATION).r();
 	}
 
 	@Override
-	public void errorReportFNF(String title, String text) {
-		errorReport(title, text);
+	public void errorReport(String title, String text) {
+		new AlertThread(title, text, AlertType.ERROR).r();
 	}
 	
 	private class AlertThread extends Thread {
@@ -121,10 +101,6 @@ public class ProgressGUIController implements UnzipperInterface, UnzipperFNFInte
 		public void run() {
 			work();
 		}
-	}
-
-	public void setFnf(boolean fnf) {
-		this.fnf = fnf;
 	}
 	
 }

@@ -1,10 +1,12 @@
-package gui;
+package com.seerofspace.batchextractor.gui;
 
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 public class ProgressGUI {
 	
@@ -32,6 +34,10 @@ public class ProgressGUI {
 	
 	public ProgressGUIController getController() {
 		return loader.getController();
+	}
+	
+	public void setOnCloseRequest(EventHandler<WindowEvent> e) {
+		stage.setOnCloseRequest(e);
 	}
 	
 }

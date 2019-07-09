@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.seerofspace.components.javafx.DirField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane fx:id="root" prefHeight="400.0" prefWidth="635.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.seerofspace.batchextractor.gui.MainGUIController">
+   <center>
+      <VBox prefHeight="200.0" prefWidth="100.0" spacing="20.0" BorderPane.alignment="CENTER">
+         <children>
+            <DirField fx:id="dirField" promptText="Zip File" type="FILES">
+               <VBox.margin>
+                  <Insets bottom="10.0" />
+               </VBox.margin></DirField>
+            <RadioButton fx:id="javaRadio" mnemonicParsing="false" selected="true" text="java">
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+               <toggleGroup>
+                  <ToggleGroup fx:id="extensionGroup" />
+               </toggleGroup>
+            </RadioButton>
+            <RadioButton fx:id="cppRadio" mnemonicParsing="false" text="cpp, h" toggleGroup="$extensionGroup">
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </RadioButton>
+            <RadioButton fx:id="customRadio" layoutX="30.0" layoutY="152.0" mnemonicParsing="false" toggleGroup="$extensionGroup">
+               <graphic>
+                  <TextField fx:id="customText" promptText="e.g. java cpp h">
+                     <tooltip>
+                        <Tooltip text="list extensions seperated by a space" />
+                     </tooltip>
+                  </TextField>
+               </graphic>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </RadioButton>
+            <CheckBox fx:id="zipExport" mnemonicParsing="false" selected="true" text="Export as zip file">
+               <VBox.margin>
+                  <Insets bottom="10.0" />
+               </VBox.margin>
+            </CheckBox>
+            <Button fx:id="startButton" mnemonicParsing="false" text="Start">
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </Button>
+         </children>
+         <BorderPane.margin>
+            <Insets />
+         </BorderPane.margin>
+         <padding>
+            <Insets left="20.0" right="20.0" top="40.0" />
+         </padding>
+      </VBox>
+   </center>
+   <top>
+      <MenuBar fx:id="menuBar" BorderPane.alignment="CENTER">
+        <menus>
+          <Menu fx:id="fileMenu" mnemonicParsing="false" text="File">
+            <items>
+              <MenuItem fx:id="exitMenuItem" mnemonicParsing="false" text="Exit" />
+            </items>
+          </Menu>
+          <Menu fx:id="helpMenu" mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem fx:id="aboutMenuItem" mnemonicParsing="false" text="About" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+   </top>
+</BorderPane>

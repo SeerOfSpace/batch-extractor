@@ -1,11 +1,9 @@
-package com.seerofspace.components;
+package com.seerofspace.components.javafx;
 
 import java.io.File;
 import java.io.IOException;
 
 import javafx.application.Platform;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,35 +17,36 @@ import javafx.stage.FileChooser.ExtensionFilter;
 
 public class DirField extends HBox {
 	
+	public enum Type {
+		FILES, FOLDERS, BOTH;
+	}
+	
 	@FXML private TextField textfield;
 	@FXML private Button fileButton;
 	@FXML private Button folderButton;
-	private String defaultText;
 	private ExtensionFilter[] extensions;
-	private PseudoClass empty;
+	private String promptText;
 	private PseudoClass dragAccepted;
 	private PseudoClass dragRejected;
-	private BooleanProperty enableFileButton;
-	private BooleanProperty enableFolderButton;
+	private Type type;
 	
 	public DirField() {
 		this("");
 	}
 	
-	public DirField(String defaultText) {
-		this(defaultText, true, true);
+	public DirField(String promptText) {
+		this(promptText, Type.BOTH);
 	}
 	
-	public DirField(String defaultText, boolean enableFileButton, boolean enableFolderButton) {
-		this(defaultText, enableFileButton, enableFolderButton, new ExtensionFilter("All Files", "*.*"));
+	public DirField(String promptText, Type type) {
+		this(promptText, type, new ExtensionFilter("All Files", "*.*"));
 	}
 	
-	public DirField(String defaultText, boolean enableFileButton, boolean enableFolderButton, ExtensionFilter... extensions) {
+	public DirField(String promptText, Type type, ExtensionFilter... extensions) {
 		super();
-		this.defaultText = defaultText;
+		this.promptText = promptText;
+		this.type = type;
 		this.extensions = extensions;
-		this.enableFileButton = new SimpleBooleanProperty(enableFileButton);
-		this.enableFolderButton = new SimpleBooleanProperty(enableFolderButton);
 		initialize();
 	}
 	
@@ -63,23 +62,14 @@ public class DirField extends HBox {
 		getStylesheets().add(getClass().getResource("stylesheet.css").toExternalForm());
 		dragAccepted = PseudoClass.getPseudoClass("dragAccepted");
 		dragRejected = PseudoClass.getPseudoClass("dragRejected");
-		empty = PseudoClass.getPseudoClass("empty");
-		textfield.setText(defaultText);
-		textfield.pseudoClassStateChanged(empty, true);
+		textfield.setPromptText(promptText);
+		setType(type);
 		textfield.focusedProperty().addListener((arg, ov, nv) -> {
 			if(nv) {
-				if(textfield.getText().equals(defaultText)) {
-					textfield.setText("");
-					textfield.pseudoClassStateChanged(empty, false);
-				} else {
+				if(!textfield.getText().equals("")) {
 					Platform.runLater(()-> {
 						textfield.selectAll();
 					});
-				}
-			} else {
-				if(textfield.getText().equals("")) {
-					textfield.setText(defaultText);
-					textfield.pseudoClassStateChanged(empty, true);
 				}
 			}
 		});
@@ -93,7 +83,6 @@ public class DirField extends HBox {
 			boolean success = false;
 			if(e.getDragboard().hasFiles()) {
 				textfield.setText(e.getDragboard().getFiles().get(0).getAbsolutePath());
-				textfield.pseudoClassStateChanged(empty, false);
 				success = true;
 			}
 			e.setDropCompleted(success);
@@ -118,7 +107,6 @@ public class DirField extends HBox {
 			File file = filechooser.showOpenDialog(this.getScene().getWindow());
 			if(file != null) {
 				textfield.setText(file.getAbsolutePath());
-				textfield.pseudoClassStateChanged(empty, false);
 			}
 			e.consume();
 		});
@@ -127,23 +115,8 @@ public class DirField extends HBox {
 			File file = filechooser.showDialog(this.getScene().getWindow());
 			if(file != null) {
 				textfield.setText(file.getAbsolutePath());
-				textfield.pseudoClassStateChanged(empty, false);
 			}
 			e.consume();
-		});
-		enableFileButton.addListener((ChangeListener) -> {
-			if(enableFileButton.get()) {
-				this.getChildren().add(1, fileButton);
-			} else {
-				this.getChildren().remove(fileButton);
-			}
-		});
-		enableFolderButton.addListener((ChangeListener) -> {
-			if(enableFolderButton.get()) {
-				this.getChildren().add(2, folderButton);
-			} else {
-				this.getChildren().remove(folderButton);
-			}
 		});
 	}
 	
@@ -157,9 +130,9 @@ public class DirField extends HBox {
 	}
 	
 	private boolean isValid(File file) {
-		if(file.isDirectory()) {
+		if(file.isDirectory() && (type == Type.FOLDERS || type == Type.BOTH)) {
 			return true;
-		} else if(file.isFile()) {
+		} else if(file.isFile() && (type == Type.FILES || type == Type.BOTH)) {
 			String extension = "*." + getExtension(file.getAbsolutePath());
 			for(ExtensionFilter e : extensions) {
 				for(String s : e.getExtensions()) {
@@ -177,26 +150,15 @@ public class DirField extends HBox {
 	}
 	
 	public void setText(String text) {
-		defaultText = text;
-		if(textfield.getPseudoClassStates().contains(empty)) {
-			textfield.setText(defaultText);
-		}
+		textfield.setText(text);
 	}
 	
-	public boolean getEnableFileButton() {
-		return enableFileButton.get();
+	public String getPromptText() {
+		return textfield.getPromptText();
 	}
 	
-	public void setEnableFileButton(boolean enableFileButton) {
-		this.enableFileButton.set(enableFileButton);
-	}
-	
-	public boolean getEnableFolderButton() {
-		return enableFolderButton.get();
-	}
-	
-	public void setEnableFolderButton(boolean enableFolderButton) {
-		this.enableFolderButton.set(enableFolderButton);
+	public void setPromptText(String text) {
+		textfield.setPromptText(text);
 	}
 	
 	public ExtensionFilter[] getExtensions() {
@@ -205,6 +167,22 @@ public class DirField extends HBox {
 	
 	public void setExtensions(ExtensionFilter... extensions) {
 		this.extensions = extensions;
+	}
+
+	public Type getType() {
+		return type;
+	}
+
+	public void setType(Type type) {
+		this.type = type;
+		this.getChildren().removeAll(fileButton, folderButton);
+		if(type == Type.FILES) {
+			this.getChildren().add(fileButton);
+		} else if(type == Type.FOLDERS) {
+			this.getChildren().add(folderButton);
+		} else if(type == Type.BOTH) {
+			this.getChildren().addAll(fileButton, folderButton);
+		}
 	}
 	
 }

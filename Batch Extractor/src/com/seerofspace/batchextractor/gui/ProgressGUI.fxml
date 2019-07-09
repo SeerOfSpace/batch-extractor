@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="225.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ProgressGUIController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="225.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.seerofspace.batchextractor.gui.ProgressGUIController">
    <center>
       <VBox spacing="25.0" BorderPane.alignment="CENTER">
          <children>
@@ -17,7 +17,7 @@
             <ProgressBar fx:id="progressBar" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" progress="0.0" />
             <HBox alignment="CENTER_RIGHT">
                <children>
-                  <Button fx:id="button" mnemonicParsing="false" prefWidth="100.0" text="Close" />
+                  <Button fx:id="stopButton" mnemonicParsing="false" prefWidth="100.0" text="Close" />
                </children>
             </HBox>
          </children>
