@@ -13,6 +13,8 @@ import com.seerofspace.utils.FileUtils;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Menu;
@@ -57,6 +59,12 @@ public class MainGUIController {
 		});
 		exitMenuItem.setOnAction(e -> {
 			Platform.exit();
+			e.consume();
+		});
+		aboutMenuItem.setOnAction(e -> {
+			Alert aboutDialog = new Alert(AlertType.INFORMATION);
+			aboutDialog.setHeaderText("Version " + MainGUI.VERSION);
+			aboutDialog.showAndWait();
 			e.consume();
 		});
 	}
