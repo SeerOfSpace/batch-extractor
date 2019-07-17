@@ -15,12 +15,11 @@ public class ProgressGUI {
 	
 	public void start() {
 		try {
-			loader = new FXMLLoader(getClass().getResource("ProgressGui.fxml"));
+			loader = new FXMLLoader(getClass().getResource("ProgressGUI.fxml"));
 			Parent root = loader.load();
 			Scene scene = new Scene(root);
 			stage = new Stage();
 			stage.setScene(scene);
-			stage.setTitle("ASDF");
 			stage.initModality(Modality.APPLICATION_MODAL);
 			stage.show();
 		} catch(Exception e) {

@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class MainGUI extends Application {
@@ -22,6 +23,7 @@ public class MainGUI extends Application {
 			Scene scene = new Scene(root);
 			primaryStage.setScene(scene);
 			primaryStage.setTitle("Batch Extractor");
+			primaryStage.getIcons().add(new Image(this.getClass().getResourceAsStream("icons8-archive-80.png")));
 			primaryStage.show();
 		} catch(Exception e) {
 			e.printStackTrace();

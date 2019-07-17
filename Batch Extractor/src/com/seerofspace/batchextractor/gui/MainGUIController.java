@@ -39,7 +39,7 @@ public class MainGUIController {
 	@FXML private ToggleGroup extensionGroup;
 	@FXML private MenuBar menuBar;
 	@FXML private Menu fileMenu;
-	@FXML private Menu aboutMenu;
+	@FXML private Menu helpMenu;
 	@FXML private MenuItem exitMenuItem;
 	@FXML private MenuItem aboutMenuItem;
 	
