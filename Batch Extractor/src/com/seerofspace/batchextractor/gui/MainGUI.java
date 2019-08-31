@@ -9,7 +9,7 @@ import javafx.stage.Stage;
 
 public class MainGUI extends Application {
 	
-	public static final String VERSION = "4.0";
+	public static final String VERSION = "4.1";
 	
 	public static void main(String[] args) {
 		launch();
